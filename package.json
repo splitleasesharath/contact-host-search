@@ -1,0 +1,31 @@
+{
+  "name": "contact-host-messaging",
+  "version": "1.0.0",
+  "description": "React modal component for contacting property hosts - converted from Bubble.io",
+  "main": "ContactHostMessaging.jsx",
+  "types": "ContactHostMessaging.d.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "react",
+    "modal",
+    "messaging",
+    "contact-form",
+    "split-lease"
+  ],
+  "author": "Split Lease Development Team",
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^14.4.3",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0"
+  }
+}
