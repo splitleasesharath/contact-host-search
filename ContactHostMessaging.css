@@ -44,11 +44,11 @@
   max-height: 90vh;
   overflow-y: auto;
   background: #FFFFFF;
-  border: 1px dotted #6B6B6B;
-  border-radius: 3px;
+  border: 1px solid #E0E0E0;
+  border-radius: 16px;
   padding: 24px 20px;
   font-family: 'DM Sans', Arial, sans-serif;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   animation: slideUp 0.3s ease-out;
 }
 
@@ -98,7 +98,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 3px;
+  border-radius: 8px;
   transition: all 0.2s ease;
   padding: 0;
   z-index: 10;
@@ -155,7 +155,7 @@
   margin-bottom: 20px;
   padding: 8px;
   background-color: #F5F5F5;
-  border-radius: 3px;
+  border-radius: 8px;
 }
 
 /* Form Groups */
@@ -167,8 +167,8 @@
 .form-group textarea {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #6B6B6B;
-  border-radius: 3px;
+  border: 1px solid #D0D0D0;
+  border-radius: 8px;
   font-family: 'DM Sans', Arial, sans-serif;
   font-size: 14px;
   box-sizing: border-box;
@@ -247,10 +247,10 @@
   background-color: #FFE5E5;
   color: #FF0000;
   padding: 12px;
-  border-radius: 3px;
+  border-radius: 8px;
   margin-top: 16px;
   font-size: 14px;
-  border-left: 3px solid #FF0000;
+  border-left: 4px solid #FF0000;
   line-height: 1.4;
 }
 
@@ -261,7 +261,7 @@
   background-color: #6D31C2;
   color: #FFFFFF;
   border: none;
-  border-radius: 3px;
+  border-radius: 10px;
   font-family: 'DM Sans', Arial, sans-serif;
   font-size: 18px;
   font-weight: 500;
@@ -299,7 +299,7 @@
   background-color: transparent;
   color: #6D31C2;
   border: 2px solid #6D31C2;
-  border-radius: 3px;
+  border-radius: 10px;
   font-family: 'DM Sans', Arial, sans-serif;
   font-size: 18px;
   font-weight: 500;
@@ -401,8 +401,8 @@
   font-size: 12px;
   padding: 12px;
   background-color: #F5F5F5;
-  border-radius: 3px;
-  border-left: 3px solid #6D31C2;
+  border-radius: 8px;
+  border-left: 4px solid #6D31C2;
 }
 
 /* Require Signup View */
@@ -418,8 +418,8 @@
   line-height: 1.5;
   padding: 12px;
   background-color: #F5F5F5;
-  border-radius: 3px;
-  border-left: 3px solid #6D31C2;
+  border-radius: 8px;
+  border-left: 4px solid #6D31C2;
 }
 
 /* Responsive Design */
