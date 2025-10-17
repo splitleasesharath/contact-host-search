@@ -241,12 +241,10 @@ const ContactHostMessaging = ({
             </span>
           )}
           <a
-            href="/signup"
+            href="https://app.split.lease/signup-login"
             className="signup-link"
-            onClick={(e) => {
-              // Prevent default if you want to handle routing differently
-              // e.preventDefault();
-            }}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Sign Up to increase your chance of a host replying and to track messages inside Split Lease
           </a>
@@ -342,7 +340,7 @@ const ContactHostMessaging = ({
 
       <button
         className="btn-primary"
-        onClick={() => window.location.href = '/signup'}
+        onClick={() => window.location.href = 'https://app.split.lease/signup-login'}
       >
         Sign Up
       </button>
