@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Host Messaging - Test Demo</title>
+
+    <!-- DM Sans Font -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- React & ReactDOM from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel Standalone for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .demo-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .demo-header h1 {
+            color: #4A4A4A;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .demo-header p {
+            color: #6B6B6B;
+            font-size: 16px;
+        }
+
+        .demo-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-group label {
+            color: #4A4A4A;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .control-group select,
+        .control-group input {
+            padding: 10px;
+            border: 1px solid #6B6B6B;
+            border-radius: 4px;
+            font-family: 'DM Sans', Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .demo-button {
+            background: #6D31C2;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 6px;
+            font-family: 'DM Sans', Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .demo-button:hover {
+            background: #5A28A3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(109, 49, 194, 0.3);
+        }
+
+        .demo-button:active {
+            transform: translateY(0);
+        }
+
+        .listing-card {
+            background: #F5F5F5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .listing-card h3 {
+            color: #4A4A4A;
+            margin-bottom: 8px;
+        }
+
+        .listing-card p {
+            color: #6B6B6B;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .info-box {
+            background: #E8DCFF;
+            border-left: 4px solid #6D31C2;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .info-box h4 {
+            color: #4A4A4A;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .info-box p {
+            color: #6B6B6B;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        #app {
+            width: 100%;
+        }
+
+        /* Component Styles */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .contact-host-modal {
+            position: relative;
+            width: 328px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #FFFFFF;
+            border: 1px dotted #6B6B6B;
+            border-radius: 3px;
+            padding: 24px 20px;
+            font-family: 'DM Sans', Arial, sans-serif;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .btn-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            color: #4A4A4A;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+            padding: 0;
+            z-index: 10;
+        }
+
+        .btn-close:hover {
+            background-color: #F5F5F5;
+            color: #000000;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .form-header .icon {
+            font-size: 32px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .form-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+            color: #4A4A4A;
+            margin: 0 0 8px 0;
+            line-height: 1.4;
+            padding: 0 20px;
+        }
+
+        .form-header .subject {
+            font-size: 14px;
+            color: #6B6B6B;
+            margin: 0;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        .logged-in-status {
+            font-size: 14px;
+            color: #6B6B6B;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 8px;
+            background-color: #F5F5F5;
+            border-radius: 3px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #6B6B6B;
+            border-radius: 3px;
+            font-family: 'DM Sans', Arial, sans-serif;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease;
+            color: #4A4A4A;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6D31C2;
+            box-shadow: 0 0 0 3px rgba(109, 49, 194, 0.1);
+        }
+
+        .form-group input:disabled {
+            background-color: #F5F5F5;
+            cursor: not-allowed;
+        }
+
+        .form-group input.error,
+        .form-group textarea.error {
+            border-color: #FF0000;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+            max-height: 200px;
+            line-height: 1.5;
+        }
+
+        .signup-link {
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #6D31C2;
+            text-decoration: none;
+            line-height: 1.4;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+
+        .error-text {
+            display: block;
+            color: #FF0000;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .error-banner {
+            background-color: #FFE5E5;
+            color: #FF0000;
+            padding: 12px;
+            border-radius: 3px;
+            margin-top: 16px;
+            font-size: 14px;
+            border-left: 3px solid #FF0000;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 0;
+            background-color: #6D31C2;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 3px;
+            font-family: 'DM Sans', Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: #5A28A3;
+        }
+
+        .btn-primary:disabled {
+            background-color: #B8A0D9;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 0;
+            background-color: transparent;
+            color: #6D31C2;
+            border: 2px solid #6D31C2;
+            border-radius: 3px;
+            font-family: 'DM Sans', Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 12px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background-color: #F5F0FF;
+        }
+
+        .success-view {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            background-color: #4CAF50;
+            color: #FFFFFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0 auto 24px auto;
+            animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-view h3 {
+            font-size: 24px;
+            font-weight: 500;
+            color: #4A4A4A;
+            margin: 0 0 16px 0;
+        }
+
+        .success-view p {
+            font-size: 16px;
+            color: #6B6B6B;
+            margin: 0 0 32px 0;
+        }
+
+        .provide-email-view,
+        .require-signup-view {
+            padding: 20px 0;
+        }
+
+        .provide-email-view h3,
+        .require-signup-view h3 {
+            font-size: 18px;
+            font-weight: 500;
+            color: #4A4A4A;
+            text-align: center;
+            margin: 0 0 12px 0;
+        }
+
+        .provide-email-view p,
+        .require-signup-view p {
+            font-size: 14px;
+            color: #6B6B6B;
+            text-align: center;
+            margin: 0 0 24px 0;
+            line-height: 1.5;
+        }
+
+        .provide-email-view .info-text {
+            margin-top: 16px;
+            font-size: 12px;
+            padding: 12px;
+            background-color: #F5F5F5;
+            border-radius: 3px;
+            border-left: 3px solid #6D31C2;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🏠 Contact Host Messaging</h1>
+            <p>Test the React component with different scenarios</p>
+        </div>
+        <div id="app"></div>
+    </div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Mock API function
+        const mockSendMessage = async (data) => {
+            console.log('📤 Sending message:', data);
+
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Simulate 90% success rate
+            if (Math.random() > 0.1) {
+                return {
+                    ok: true,
+                    json: async () => ({
+                        success: true,
+                        messageId: 'msg_' + Math.random().toString(36).substr(2, 9),
+                        timestamp: new Date().toISOString()
+                    })
+                };
+            } else {
+                return {
+                    ok: false,
+                    json: async () => ({
+                        success: false,
+                        message: 'Simulated error: Please try again'
+                    })
+                };
+            }
+        };
+
+        // Contact Host Messaging Component
+        const ContactHostMessaging = ({ listing, currentUser, isOpen, onClose }) => {
+            const [currentView, setCurrentView] = useState('contactForm');
+            const [messageSent, setMessageSent] = useState(false);
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [formData, setFormData] = useState({
+                userName: currentUser?.firstName || '',
+                subject: listing?.title || '',
+                messageBody: '',
+                email: currentUser?.email || ''
+            });
+            const [errors, setErrors] = useState({});
+            const isLoggedIn = !!currentUser;
+
+            useEffect(() => {
+                setFormData(prev => ({
+                    ...prev,
+                    userName: currentUser?.firstName || prev.userName,
+                    subject: listing?.title || prev.subject,
+                    email: currentUser?.email || prev.email
+                }));
+            }, [currentUser, listing]);
+
+            const isValidEmail = (email) => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            };
+
+            const validateForm = () => {
+                const newErrors = {};
+
+                if (!formData.userName.trim()) {
+                    newErrors.userName = 'Name is required';
+                }
+
+                if (!formData.messageBody.trim()) {
+                    newErrors.messageBody = 'Message is required';
+                } else if (formData.messageBody.trim().length < 10) {
+                    newErrors.messageBody = 'Message must be at least 10 characters';
+                }
+
+                if (!isLoggedIn && !formData.email.trim()) {
+                    newErrors.email = 'Email is required for guest users';
+                } else if (!isLoggedIn && formData.email.trim() && !isValidEmail(formData.email)) {
+                    newErrors.email = 'Please enter a valid email address';
+                }
+
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            };
+
+            const handleSendMessage = async () => {
+                if (!validateForm()) return;
+
+                setIsSubmitting(true);
+                setErrors({});
+
+                try {
+                    const response = await mockSendMessage({
+                        listingId: listing.id,
+                        hostId: listing.hostId,
+                        senderName: formData.userName,
+                        senderEmail: formData.email,
+                        subject: formData.subject,
+                        message: formData.messageBody,
+                        userId: currentUser?.id || null,
+                        timestamp: new Date().toISOString()
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        setMessageSent(true);
+                        setCurrentView('success');
+                    } else {
+                        setErrors({
+                            submit: data.message || 'Failed to send message. Please try again.'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    setErrors({
+                        submit: 'Network error. Please check your connection and try again.'
+                    });
+                } finally {
+                    setIsSubmitting(false);
+                }
+            };
+
+            const handleInputChange = (field, value) => {
+                setFormData(prev => ({ ...prev, [field]: value }));
+                if (errors[field]) {
+                    setErrors(prev => {
+                        const newErrors = { ...prev };
+                        delete newErrors[field];
+                        return newErrors;
+                    });
+                }
+            };
+
+            const handleClose = () => {
+                setCurrentView('contactForm');
+                setMessageSent(false);
+                setIsSubmitting(false);
+                setFormData({
+                    userName: currentUser?.firstName || '',
+                    subject: listing?.title || '',
+                    messageBody: '',
+                    email: currentUser?.email || ''
+                });
+                setErrors({});
+                onClose();
+            };
+
+            const renderContactForm = () => (
+                <div className="contact-form-view">
+                    <div className="form-header">
+                        <span className="icon">💬</span>
+                        <h2>Message {listing?.hostName || 'Host'}</h2>
+                        {formData.subject && <p className="subject">{formData.subject}</p>}
+                    </div>
+
+                    {isLoggedIn && (
+                        <p className="logged-in-status">
+                            Logged in as {currentUser?.firstName} {currentUser?.lastName}
+                        </p>
+                    )}
+
+                    <div className="form-group">
+                        <input
+                            type="text"
+                            placeholder="Your name"
+                            value={formData.userName}
+                            onChange={(e) => handleInputChange('userName', e.target.value)}
+                            className={errors.userName ? 'error' : ''}
+                            disabled={isLoggedIn}
+                        />
+                        {errors.userName && <span className="error-text">{errors.userName}</span>}
+                    </div>
+
+                    {!isLoggedIn && (
+                        <div className="form-group">
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                value={formData.email}
+                                onChange={(e) => handleInputChange('email', e.target.value)}
+                                className={errors.email ? 'error' : ''}
+                            />
+                            {errors.email && <span className="error-text">{errors.email}</span>}
+                            <a href="#" className="signup-link" onClick={(e) => e.preventDefault()}>
+                                Sign Up to increase your chance of a host replying
+                            </a>
+                        </div>
+                    )}
+
+                    <div className="form-group">
+                        <textarea
+                            placeholder="Your message..."
+                            rows="5"
+                            value={formData.messageBody}
+                            onChange={(e) => handleInputChange('messageBody', e.target.value)}
+                            className={errors.messageBody ? 'error' : ''}
+                        />
+                        {errors.messageBody && <span className="error-text">{errors.messageBody}</span>}
+                    </div>
+
+                    <button
+                        className="btn-primary"
+                        onClick={handleSendMessage}
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Sending...' : 'Send message'}
+                    </button>
+
+                    {errors.submit && <div className="error-banner">{errors.submit}</div>}
+                </div>
+            );
+
+            const renderSuccessView = () => (
+                <div className="success-view">
+                    <div className="success-icon">✓</div>
+                    <h3>It's on its way!!</h3>
+                    <p>Your message has been sent.</p>
+                    <button className="btn-primary" onClick={handleClose}>
+                        Done
+                    </button>
+                </div>
+            );
+
+            if (!isOpen) return null;
+
+            return (
+                <div className="modal-overlay" onClick={handleClose}>
+                    <div className="contact-host-modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="btn-close" onClick={handleClose}>×</button>
+                        {currentView === 'contactForm' && renderContactForm()}
+                        {currentView === 'success' && renderSuccessView()}
+                    </div>
+                </div>
+            );
+        };
+
+        // Demo App Component
+        const DemoApp = () => {
+            const [showModal, setShowModal] = useState(false);
+            const [userMode, setUserMode] = useState('guest');
+            const [currentListing, setCurrentListing] = useState('listing1');
+
+            const listings = {
+                listing1: {
+                    id: 'listing123',
+                    title: 'Beautiful 2BR Apartment in Downtown',
+                    hostId: 'host456',
+                    hostName: 'Jane Smith',
+                    price: 1500
+                },
+                listing2: {
+                    id: 'listing789',
+                    title: 'Cozy Studio near University',
+                    hostId: 'host101',
+                    hostName: 'Michael Chen',
+                    price: 950
+                },
+                listing3: {
+                    id: 'listing555',
+                    title: 'Spacious 3BR House with Garden',
+                    hostId: 'host222',
+                    hostName: 'Sarah Johnson',
+                    price: 2200
+                }
+            };
+
+            const users = {
+                guest: null,
+                logged_in: {
+                    id: 'user789',
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    email: 'john.doe@example.com'
+                }
+            };
+
+            const listing = listings[currentListing];
+            const currentUser = users[userMode];
+
+            return (
+                <div>
+                    <div className="listing-card">
+                        <h3>{listing.title}</h3>
+                        <p><strong>Host:</strong> {listing.hostName}</p>
+                        <p><strong>Price:</strong> ${listing.price}/month</p>
+                        <p><strong>Listing ID:</strong> {listing.id}</p>
+                    </div>
+
+                    <div className="demo-controls">
+                        <div className="control-group">
+                            <label>User Mode:</label>
+                            <select
+                                value={userMode}
+                                onChange={(e) => setUserMode(e.target.value)}
+                            >
+                                <option value="guest">Guest User (Not Logged In)</option>
+                                <option value="logged_in">Logged In User (John Doe)</option>
+                            </select>
+                        </div>
+
+                        <div className="control-group">
+                            <label>Select Listing:</label>
+                            <select
+                                value={currentListing}
+                                onChange={(e) => setCurrentListing(e.target.value)}
+                            >
+                                <option value="listing1">2BR Apartment - Jane Smith</option>
+                                <option value="listing2">Studio - Michael Chen</option>
+                                <option value="listing3">3BR House - Sarah Johnson</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button
+                        className="demo-button"
+                        onClick={() => setShowModal(true)}
+                    >
+                        📧 Contact Host
+                    </button>
+
+                    <div className="info-box">
+                        <h4>💡 Test Instructions:</h4>
+                        <p>
+                            <strong>As Guest:</strong> Email field is required. Try submitting without filling all fields to see validation.<br/>
+                            <strong>As Logged In:</strong> Name and email are pre-filled. Form is streamlined.<br/>
+                            <strong>Success Rate:</strong> 90% (some submissions will show error message for testing).
+                        </p>
+                    </div>
+
+                    <ContactHostMessaging
+                        listing={listing}
+                        currentUser={currentUser}
+                        isOpen={showModal}
+                        onClose={() => setShowModal(false)}
+                    />
+                </div>
+            );
+        };
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('app'));
+        root.render(<DemoApp />);
+    </script>
+</body>
+</html>
