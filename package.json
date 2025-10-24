@@ -7,7 +7,11 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "preview": "start preview-local.html",
+    "preview:live": "start preview-bubble-live.html",
+    "serve": "npx http-server -p 8080 -o preview-local.html",
+    "serve:live": "npx http-server -p 8080 -o preview-bubble-live.html"
   },
   "keywords": [
     "react",

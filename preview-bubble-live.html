@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Host Messaging - Live Bubble Test</title>
+
+    <!-- DM Sans Font -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- React & ReactDOM from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel Standalone for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Component CSS -->
+    <link rel="stylesheet" href="./ContactHostMessaging.css">
+
+    <!-- Bubble Configuration -->
+    <script>
+        // Configure your Bubble API endpoint here
+        window.ENV = {
+            BUBBLE_API_BASE_URL: 'https://app.split.lease/version-test/api/1.1',
+            BUBBLE_MESSAGING_ENDPOINT: 'https://app.split.lease/version-test/api/1.1/wf/core-contact-host-send-message',
+            BUBBLE_API_KEY: '05a7a0d1d2400a0b574acd99748e07a0' // Replace with your actual API key
+        };
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .preview-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #6D31C2;
+            padding-bottom: 20px;
+        }
+
+        .preview-header h1 {
+            color: #4A4A4A;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .preview-header .badge {
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .preview-header .badge.demo {
+            background: #FF9800;
+        }
+
+        .preview-header p {
+            color: #6B6B6B;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .test-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .control-card {
+            background: #F5F5F5;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #6D31C2;
+        }
+
+        .control-card h3 {
+            color: #4A4A4A;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            color: #4A4A4A;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .control-group select,
+        .control-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #D0D0D0;
+            border-radius: 4px;
+            font-family: 'DM Sans', Arial, sans-serif;
+            font-size: 14px;
+            background: white;
+        }
+
+        .listing-preview {
+            background: linear-gradient(135deg, #E8DCFF 0%, #F5F0FF 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #D0C4E8;
+        }
+
+        .listing-preview h3 {
+            color: #4A4A4A;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .listing-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .listing-info-item {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .listing-info-item strong {
+            color: #6D31C2;
+            display: block;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .listing-info-item span {
+            color: #4A4A4A;
+        }
+
+        .action-button {
+            background: #6D31C2;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-family: 'DM Sans', Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-button:hover {
+            background: #5A28A3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(109, 49, 194, 0.4);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+        }
+
+        .info-panel {
+            background: #E8DCFF;
+            border-left: 4px solid #6D31C2;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .info-panel h4 {
+            color: #4A4A4A;
+            margin-bottom: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-panel ul {
+            color: #6B6B6B;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-left: 20px;
+        }
+
+        .info-panel li {
+            margin-bottom: 8px;
+        }
+
+        .warning-panel {
+            background: #FFF3CD;
+            border-left: 4px solid #FF9800;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .warning-panel h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .warning-panel p {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .console-log {
+            background: #1E1E1E;
+            color: #00FF00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .console-log-header {
+            color: #4A4A4A;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-info-display {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .user-info-display div {
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .test-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .listing-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div class="preview-header">
+            <h1>🏠 Contact Host Messaging</h1>
+            <span class="badge" id="modeBadge">🔴 DEMO MODE</span>
+            <p>Live Bubble API Testing Environment</p>
+        </div>
+        <div id="app"></div>
+    </div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Real Bubble API Integration
+        const sendMessageToBubble = async (data) => {
+            const logEntry = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+
+            const log = (message, color = '#00FF00') => {
+                if (logEntry) {
+                    logEntry.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span>\n`;
+                    logEntry.scrollTop = logEntry.scrollHeight;
+                }
+            };
+
+            // Check if Bubble endpoint is configured
+            if (!window.ENV || !window.ENV.BUBBLE_MESSAGING_ENDPOINT) {
+                log('⚠️ WARNING: Bubble endpoint not configured!', '#FF9800');
+                log('📋 Using DEMO MODE - No actual message will be sent', '#FF9800');
+                log('📤 Demo data: ' + JSON.stringify(data, null, 2), '#FFD700');
+
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                log('✅ Demo mode: Message would be sent successfully', '#4CAF50');
+                return {
+                    ok: true,
+                    json: async () => ({
+                        success: true,
+                        message_id: 'demo_' + Math.random().toString(36).substr(2, 9),
+                        timestamp: new Date().toISOString()
+                    })
+                };
+            }
+
+            // Prepare payload for Bubble
+            const payload = {
+                listing_unique_id: data.listingId,
+                message_body: data.message,
+                sender_email: data.senderEmail || '',
+                sender_name: data.senderName
+            };
+
+            log('📡 Calling REAL Bubble API...', '#00BFFF');
+            log('🔗 Endpoint: ' + window.ENV.BUBBLE_MESSAGING_ENDPOINT, '#00BFFF');
+            log('📤 Payload: ' + JSON.stringify(payload, null, 2), '#FFD700');
+
+            try {
+                const response = await fetch(window.ENV.BUBBLE_MESSAGING_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${window.ENV.BUBBLE_API_KEY || ''}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                log('📨 Response status: ' + response.status, response.ok ? '#4CAF50' : '#FF0000');
+
+                const responseData = await response.json();
+                log('📥 Response data: ' + JSON.stringify(responseData, null, 2), response.ok ? '#4CAF50' : '#FF0000');
+
+                if (response.ok) {
+                    log('✅ Message sent successfully to Bubble!', '#4CAF50');
+                } else {
+                    log('❌ Bubble API error: ' + (responseData.message || 'Unknown error'), '#FF0000');
+                }
+
+                return {
+                    ok: response.ok,
+                    json: async () => responseData
+                };
+            } catch (error) {
+                log('❌ Network error: ' + error.message, '#FF0000');
+                log('💡 Check CORS settings in Bubble', '#FF9800');
+                throw error;
+            }
+        };
+
+        // Contact Host Messaging Component
+        const ContactHostMessaging = ({ listing, currentUser, isOpen, onClose }) => {
+            const [currentView, setCurrentView] = useState('contactForm');
+            const [messageSent, setMessageSent] = useState(false);
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [formData, setFormData] = useState({
+                userName: currentUser?.firstName || '',
+                subject: listing?.title || '',
+                messageBody: '',
+                email: currentUser?.email || ''
+            });
+            const [errors, setErrors] = useState({});
+            const isLoggedIn = !!currentUser;
+
+            useEffect(() => {
+                setFormData(prev => ({
+                    ...prev,
+                    userName: currentUser?.firstName || prev.userName,
+                    subject: listing?.title || prev.subject,
+                    email: currentUser?.email || prev.email
+                }));
+            }, [currentUser, listing]);
+
+            const isValidEmail = (email) => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            };
+
+            const validateForm = () => {
+                const newErrors = {};
+
+                if (!formData.userName.trim()) {
+                    newErrors.userName = 'Name is required';
+                }
+
+                if (!formData.messageBody.trim()) {
+                    newErrors.messageBody = 'Message is required';
+                } else if (formData.messageBody.trim().length < 10) {
+                    newErrors.messageBody = 'Message must be at least 10 characters';
+                }
+
+                if (!isLoggedIn && !formData.email.trim()) {
+                    newErrors.email = 'Email is required for guest users';
+                } else if (!isLoggedIn && formData.email.trim() && !isValidEmail(formData.email)) {
+                    newErrors.email = 'Please enter a valid email address';
+                }
+
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            };
+
+            const handleSendMessage = async () => {
+                if (!validateForm()) return;
+
+                setIsSubmitting(true);
+                setErrors({});
+
+                try {
+                    const response = await sendMessageToBubble({
+                        listingId: listing.id,
+                        hostId: listing.hostId,
+                        senderName: formData.userName,
+                        senderEmail: formData.email,
+                        subject: formData.subject,
+                        message: formData.messageBody,
+                        userId: currentUser?.id || null,
+                        timestamp: new Date().toISOString()
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        setMessageSent(true);
+                        setCurrentView('success');
+                    } else {
+                        setErrors({
+                            submit: data.message || 'Failed to send message. Please try again.'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    setErrors({
+                        submit: 'Network error. Please check your connection and CORS settings.'
+                    });
+                } finally {
+                    setIsSubmitting(false);
+                }
+            };
+
+            const handleInputChange = (field, value) => {
+                setFormData(prev => ({ ...prev, [field]: value }));
+                if (errors[field]) {
+                    setErrors(prev => {
+                        const newErrors = { ...prev };
+                        delete newErrors[field];
+                        return newErrors;
+                    });
+                }
+            };
+
+            const handleClose = () => {
+                setCurrentView('contactForm');
+                setMessageSent(false);
+                setIsSubmitting(false);
+                setFormData({
+                    userName: currentUser?.firstName || '',
+                    subject: listing?.title || '',
+                    messageBody: '',
+                    email: currentUser?.email || ''
+                });
+                setErrors({});
+                onClose();
+            };
+
+            useEffect(() => {
+                const handleEscape = (e) => {
+                    if (e.key === 'Escape' && isOpen) {
+                        handleClose();
+                    }
+                };
+
+                if (isOpen) {
+                    document.addEventListener('keydown', handleEscape);
+                    document.body.style.overflow = 'hidden';
+                }
+
+                return () => {
+                    document.removeEventListener('keydown', handleEscape);
+                    document.body.style.overflow = 'unset';
+                };
+            }, [isOpen]);
+
+            const renderContactForm = () => (
+                <div className="contact-form-view">
+                    <div className="form-header">
+                        <span className="icon">💬</span>
+                        <h2>Message {listing?.hostName || 'Host'}</h2>
+                        {formData.subject && <p className="subject">{formData.subject}</p>}
+                    </div>
+
+                    {isLoggedIn && (
+                        <p className="logged-in-status">
+                            Logged in as {currentUser?.firstName} {currentUser?.lastName}
+                        </p>
+                    )}
+
+                    <div className="form-group">
+                        <input
+                            type="text"
+                            placeholder="Your name"
+                            value={formData.userName}
+                            onChange={(e) => handleInputChange('userName', e.target.value)}
+                            className={errors.userName ? 'error' : ''}
+                            disabled={isLoggedIn}
+                        />
+                        {errors.userName && <span className="error-text">{errors.userName}</span>}
+                    </div>
+
+                    {!isLoggedIn && (
+                        <div className="form-group">
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                value={formData.email}
+                                onChange={(e) => handleInputChange('email', e.target.value)}
+                                className={errors.email ? 'error' : ''}
+                            />
+                            {errors.email && <span className="error-text">{errors.email}</span>}
+                            <a href="https://app.split.lease/signup-login" className="signup-link" target="_blank" rel="noopener noreferrer">
+                                Sign Up to increase your chance of a host replying and to track messages inside Split Lease
+                            </a>
+                        </div>
+                    )}
+
+                    <div className="form-group">
+                        <textarea
+                            placeholder="Your message..."
+                            rows="5"
+                            value={formData.messageBody}
+                            onChange={(e) => handleInputChange('messageBody', e.target.value)}
+                            className={errors.messageBody ? 'error' : ''}
+                        />
+                        {errors.messageBody && <span className="error-text">{errors.messageBody}</span>}
+                    </div>
+
+                    <button
+                        className="btn-primary"
+                        onClick={handleSendMessage}
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Sending...' : 'Send message'}
+                    </button>
+
+                    {errors.submit && <div className="error-banner">{errors.submit}</div>}
+                </div>
+            );
+
+            const renderSuccessView = () => (
+                <div className="success-view">
+                    <div className="success-icon">✓</div>
+                    <h3>It's on its way!!</h3>
+                    <p>Your message has been sent.</p>
+                    <button className="btn-primary" onClick={handleClose}>
+                        Done
+                    </button>
+                </div>
+            );
+
+            if (!isOpen) return null;
+
+            return (
+                <div className="modal-overlay" onClick={handleClose}>
+                    <div className="contact-host-modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="btn-close" onClick={handleClose}>×</button>
+                        {currentView === 'contactForm' && renderContactForm()}
+                        {currentView === 'success' && renderSuccessView()}
+                    </div>
+                </div>
+            );
+        };
+
+        // Demo App Component
+        const PreviewApp = () => {
+            const [showModal, setShowModal] = useState(false);
+            const [userMode, setUserMode] = useState('guest');
+            const [currentListing, setCurrentListing] = useState('listing1');
+
+            // Check if Bubble endpoint is configured
+            useEffect(() => {
+                const modeBadge = document.getElementById('modeBadge');
+                if (window.ENV && window.ENV.BUBBLE_MESSAGING_ENDPOINT) {
+                    modeBadge.textContent = '🟢 LIVE MODE';
+                    modeBadge.className = 'badge';
+
+                    const log = document.getElementById('console-output');
+                    if (log) {
+                        log.innerHTML = '✅ Bubble API endpoint configured!\n';
+                        log.innerHTML += '🔗 Endpoint: ' + window.ENV.BUBBLE_MESSAGING_ENDPOINT + '\n';
+                        log.innerHTML += '📡 Ready to send messages to your Bubble backend.\n\n';
+                    }
+                } else {
+                    const log = document.getElementById('console-output');
+                    if (log) {
+                        log.innerHTML = '⚠️ Running in DEMO MODE\n';
+                        log.innerHTML += '📋 Configure window.ENV.BUBBLE_MESSAGING_ENDPOINT to enable live mode\n';
+                        log.innerHTML += '💡 Messages will be simulated, not actually sent.\n\n';
+                    }
+                }
+            }, []);
+
+            const listings = {
+                listing1: {
+                    id: 'listing123',
+                    title: 'Beautiful 2BR Apartment in Downtown',
+                    hostId: 'host456',
+                    hostName: 'Jane Smith',
+                    price: 1500,
+                    location: 'Downtown, City Center'
+                },
+                listing2: {
+                    id: 'listing789',
+                    title: 'Cozy Studio near University',
+                    hostId: 'host101',
+                    hostName: 'Michael Chen',
+                    price: 950,
+                    location: 'University District'
+                },
+                listing3: {
+                    id: 'listing555',
+                    title: 'Spacious 3BR House with Garden',
+                    hostId: 'host222',
+                    hostName: 'Sarah Johnson',
+                    price: 2200,
+                    location: 'Suburban Area'
+                }
+            };
+
+            const users = {
+                guest: null,
+                logged_in: {
+                    id: 'user789',
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    email: 'john.doe@example.com'
+                }
+            };
+
+            const listing = listings[currentListing];
+            const currentUser = users[userMode];
+
+            return (
+                <div>
+                    {(!window.ENV || !window.ENV.BUBBLE_MESSAGING_ENDPOINT) && (
+                        <div className="warning-panel">
+                            <h4>⚠️ Demo Mode Active</h4>
+                            <p>
+                                The Bubble API endpoint is not configured. Messages will be simulated only.
+                                To enable live mode, edit line 24 of this HTML file and set your Bubble workflow URL.
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="test-controls">
+                        <div className="control-card">
+                            <h3>👤 User Settings</h3>
+                            <div className="control-group">
+                                <label>User Mode:</label>
+                                <select
+                                    value={userMode}
+                                    onChange={(e) => setUserMode(e.target.value)}
+                                >
+                                    <option value="guest">Guest User (Not Logged In)</option>
+                                    <option value="logged_in">Logged In (John Doe)</option>
+                                </select>
+                            </div>
+                            {currentUser && (
+                                <div className="user-info-display">
+                                    <div><strong>Name:</strong> {currentUser.firstName} {currentUser.lastName}</div>
+                                    <div><strong>Email:</strong> {currentUser.email}</div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="control-card">
+                            <h3>🏠 Listing Settings</h3>
+                            <div className="control-group">
+                                <label>Select Property:</label>
+                                <select
+                                    value={currentListing}
+                                    onChange={(e) => setCurrentListing(e.target.value)}
+                                >
+                                    <option value="listing1">2BR Apartment - Jane Smith</option>
+                                    <option value="listing2">Studio - Michael Chen</option>
+                                    <option value="listing3">3BR House - Sarah Johnson</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="listing-preview">
+                        <h3>{listing.title}</h3>
+                        <div className="listing-info">
+                            <div className="listing-info-item">
+                                <strong>HOST</strong>
+                                <span>{listing.hostName}</span>
+                            </div>
+                            <div className="listing-info-item">
+                                <strong>PRICE</strong>
+                                <span>${listing.price}/month</span>
+                            </div>
+                            <div className="listing-info-item">
+                                <strong>LOCATION</strong>
+                                <span>{listing.location}</span>
+                            </div>
+                            <div className="listing-info-item">
+                                <strong>LISTING ID</strong>
+                                <span>{listing.id}</span>
+                            </div>
+                        </div>
+                        <button
+                            className="action-button"
+                            onClick={() => setShowModal(true)}
+                        >
+                            <span>💬</span>
+                            Contact Host
+                        </button>
+                    </div>
+
+                    <div className="info-panel">
+                        <h4>💡 Testing Instructions</h4>
+                        <ul>
+                            <li><strong>Guest Mode:</strong> Email field is required.</li>
+                            <li><strong>Logged In Mode:</strong> Name and email are pre-filled.</li>
+                            <li><strong>Watch Console:</strong> See real API calls and responses below.</li>
+                            <li><strong>Bubble Data:</strong> Check your Bubble database after sending.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div className="console-log-header">🖥️ Console Output (Live API Logs)</div>
+                        <div className="console-log">
+                            <pre id="console-output">Initializing...</pre>
+                        </div>
+                    </div>
+
+                    <ContactHostMessaging
+                        listing={listing}
+                        currentUser={currentUser}
+                        isOpen={showModal}
+                        onClose={() => setShowModal(false)}
+                    />
+                </div>
+            );
+        };
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('app'));
+        root.render(<PreviewApp />);
+    </script>
+</body>
+</html>

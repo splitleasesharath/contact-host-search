@@ -502,6 +502,51 @@ describe('ContactHostMessaging', () => {
 });
 ```
 
+## Testing & Preview
+
+### Local Preview Options
+
+We provide two preview files for testing the component:
+
+#### 1. Mock API Preview (`preview-local.html`)
+For UI/UX testing without backend integration:
+```bash
+npm run preview
+# or
+npm run serve
+```
+- Uses simulated API responses
+- No backend required
+- Perfect for design and flow testing
+- 90% success rate simulation for error testing
+
+#### 2. Live Bubble API Preview (`preview-bubble-live.html`) ⭐ **Recommended**
+For testing with your real Bubble backend:
+```bash
+npm run preview:live
+# or
+npm run serve:live
+```
+- Connects to actual Bubble workflow
+- Real message sending and database storage
+- Live API response logging
+- CORS configuration required
+
+**Quick Setup:**
+1. Open `preview-bubble-live.html`
+2. Configure your Bubble endpoint (line 24)
+3. Enable CORS in Bubble Settings → API
+4. Open in browser and test!
+
+See `TESTING_WITH_BUBBLE.md` for complete setup instructions.
+
+### Testing Documentation
+
+- **`LOCAL_PREVIEW_GUIDE.md`** - Comprehensive preview setup and testing scenarios
+- **`TESTING_WITH_BUBBLE.md`** - Live Bubble API integration guide with troubleshooting
+- **`BUBBLE_WORKFLOW_INTEGRATION.md`** - Complete Bubble backend setup
+- **`BUBBLE_CORS_FIX.md`** - CORS configuration guide
+
 ## Troubleshooting
 
 ### Issue: Modal doesn't close on overlay click
